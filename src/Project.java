@@ -65,9 +65,9 @@ public class Project {
         System.out.println(protagonist.getDestinationList());
 
         protagonist.setPosition(Place.UNKNOWN);
-        System.out.println(protagonist.getPosition());
+        System.out.println(protagonist.getName() + " находится: " +protagonist.getPosition());
 
         protagonist.setPosition(Place.FIELD);
-        System.out.println(protagonist.getPosition());
+        System.out.println(protagonist.getName() + " находится: " + protagonist.getPosition());
     }
 }

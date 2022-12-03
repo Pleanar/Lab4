@@ -7,11 +7,17 @@ import estate.Barge;
 import estate.Immovables;
 import interfaces.IBoss;
 import interfaces.IIntensinable;
+import interfaces.IName;
+import interfaces.IPositionable;
 import requisite.Stock;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Millioners extends Entity implements IBoss, IIntensinable {
+public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
+
+    protected Place position;
+
+    protected String name;
     private ArrayList<Stock> stocks = new ArrayList<>(0);
     private ArrayList<Immovables> immovables = new ArrayList<>(0);
 
@@ -113,14 +119,35 @@ public class Millioners extends Entity implements IBoss, IIntensinable {
         return stock.getPrice() <= AverageStock.getPrice();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPosition(Place position) {
+        this.position = position;
+    }
+
+    public String getPosition() {
+        return position.getPlace();
+    }
+
     @Override
     public boolean equals(Object otherObject)
     {
-        if (!super.equals(otherObject)) return false;
+        if (this == otherObject) return true;
+
+        if (otherObject == null) return false;
+
+        if (!this.getClass().equals(otherObject.getClass())) return false;
 
         Millioners other = (Millioners) otherObject;
 
-        boolean result = (this.cash == other.cash) && this.immovables.equals(other.immovables) && this.stocks.equals(other.stocks);
+        boolean result = this.name.equals(other.name) && this.position.equals(other.position) && (this.cash == other.cash)
+                && this.stocks.equals(other.stocks) && this.destinationList.equals(other.destinationList) && this.immovables.equals(other.immovables);
 
         return result;
     }
@@ -128,7 +155,7 @@ public class Millioners extends Entity implements IBoss, IIntensinable {
     @Override
     public int hashCode()
     {
-        return Objects.hash(super.hashCode(), cash, immovables, stocks);
+        return Objects.hash(name, position, stocks, immovables, cash, destinationList);
     }
 
     @Override
@@ -136,6 +163,7 @@ public class Millioners extends Entity implements IBoss, IIntensinable {
     {
         return this.getClass().getName() + "["
                 + "name=" + name + "position=" + position.getPlace() + "cash="
-                + cash + "immovables=" + this.getImmovables() + "stocks=" + this.getStocks() + "]";
+                + cash + "immovables=" + this.getImmovables() + "stocks="
+                + this.getStocks() + "destinationList=" + this.getDestinationList() + "]";
     }
 }
