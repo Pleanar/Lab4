@@ -50,7 +50,7 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
         return destinationList.get(0);
     }
     public String getDestinationList() {
-        String list = "хочет пойти:" + getNextDestination();
+        String list = this.getName() + " хочет пойти: " + getNextDestination();
         for (int i = 1; i < destinationList.size(); i++){
             list = list + ", " + destinationList.get(i);
         }
@@ -58,10 +58,10 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
     }
 
     public String getImmovables() {
-        String list = "";
+        String list = this.getName() + " имеет ";
         for (int i = 0; i < immovables.size(); i++){
             Immovables immovable = immovables.get(i);
-            list = list + "собственность -" + immovable.getName() + "находится в" + immovable.getPosition();
+            list = list + "собственность - " + immovable.getName() + " находится в " + immovable.getPosition();
 
             if (immovable.getClass().equals(new Barge().getClass())){
                 Barge barge = (Barge) immovable;
@@ -69,6 +69,14 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
             }
         }
         return list;
+    }
+
+    public void addImmovables(Immovables... newImmovables){
+        if (newImmovables != null) {
+            for (Immovables immovable : newImmovables) {
+                immovables.add(immovable);
+            }
+        }
     }
 
     public String getStocks() {

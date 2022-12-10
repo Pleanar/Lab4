@@ -21,9 +21,12 @@ import actors.*;
 import enums.*;
 import estate.*;
 import requisite.*;
+import interfaces.IMessenger;
 
 public class Project {
     public static void main(String[] args) {
+
+        IMessenger messenger = mes -> System.out.println(mes);
 
         Millioners protagonist = new Millioners("Скуперфильд", Place.HOMETOWN, 15000000);
 
@@ -32,6 +35,8 @@ public class Project {
 
         Barge BargeA = new Barge("Баржа1", protagonist.getName(), Place.HOMETOWN);
         Barge BargeB = new Barge("давилонская баржа", protagonist.getName(), Place.DAVILON);
+
+        protagonist.addImmovables(protHome, protFactory, BargeA, BargeB);
 
         Loudthroat Nameless1 = new Loudthroat("Раб1", Place.HOMETOWN);
         Loudthroat Nameless2 = new Loudthroat("Раб2", Place.HOMETOWN);
@@ -48,13 +53,13 @@ public class Project {
         Stock ExampleStock3 = new Stock("хайповая", 7);
         Stock GigaStock = new Stock("гигантские акции", 1000);
 
-        System.out.println(protagonist.getImmovables());
+        messenger.message(protagonist.getImmovables());
 
-        System.out.println(protagonist.giveInstruction(BargeA,Instruction.BUY, ExampleStock1));
-        System.out.println(protagonist.giveInstruction(BargeA,Instruction.BUY,ExampleStock2));
+        messenger.message(protagonist.giveInstruction(BargeA,Instruction.BUY, ExampleStock1));
+        messenger.message(protagonist.giveInstruction(BargeA,Instruction.BUY,ExampleStock2));
 
-        System.out.println(protagonist.checkStock(ExampleStock2));
-        System.out.println(protagonist.checkStock(ExampleStock3));
+        messenger.message(protagonist.checkStock(ExampleStock2));
+        messenger.message(protagonist.checkStock(ExampleStock3));
 
         protagonist.addDestination(protHome.getName());
         protagonist.addDestination(protFactory.getName());
@@ -62,12 +67,12 @@ public class Project {
         protagonist.addDestination(Place.DAVILON.getPlace());
         protagonist.addDestination(BargeB.getName());
 
-        System.out.println(protagonist.getDestinationList());
+        messenger.message(protagonist.getDestinationList());
 
         protagonist.setPosition(Place.UNKNOWN);
-        System.out.println(protagonist.getName() + " находится: " +protagonist.getPosition());
+        messenger.message(protagonist.getName() + " находится: " +protagonist.getPosition());
 
         protagonist.setPosition(Place.FIELD);
-        System.out.println(protagonist.getName() + " находится: " + protagonist.getPosition());
+        messenger.message(protagonist.getName() + " находится: " + protagonist.getPosition());
     }
 }
