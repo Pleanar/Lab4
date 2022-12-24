@@ -19,60 +19,108 @@
 
 import actors.*;
 import enums.*;
-import estate.*;
+import places.socialPlaces.Plaza;
+import places.socialPlaces.SocialPlace;
+import places.unknownPlaces.Field;
+import places.unknownPlaces.Street;
+import places.estate.*;
 import requisite.*;
-import interfaces.IMessenger;
 
 public class Project {
+    @FunctionalInterface
+    interface IMessenger{
+        void message(String mes);
+    }
+
     public static void main(String[] args) {
 
-        IMessenger messenger = mes -> System.out.println(mes);
+        IMessenger messenger = System.out::println;
+        IMessenger byDefault = (mes) -> System.out.println("Автор пока ничего не придумал");
 
-        Millioners protagonist = new Millioners("Скуперфильд", Place.HOMETOWN, 15000000);
+        byDefault.message("");
+        SocialPlace plaza = new Plaza();
+        Barge exBarge = new Barge();
 
-        Home protHome = new Home("свой дом", protagonist.getName(), Place.HOMETOWN);
-        PastaFactory protFactory = new PastaFactory("своя фабрика", protagonist.getName(), Place.HOMETOWN);
+        Loudthroat exLoudthroat1 = new Loudthroat(plaza);
+        Loudthroat exLoudthroat2 = new Loudthroat(plaza);
 
-        Barge BargeA = new Barge("Баржа1", protagonist.getName(), Place.HOMETOWN);
-        Barge BargeB = new Barge("давилонская баржа", protagonist.getName(), Place.DAVILON);
+        Citizen citizen1 = new Citizen("Павел", plaza);
+        Citizen citizen2 = new Citizen(plaza);
 
-        protagonist.addImmovables(protHome, protFactory, BargeA, BargeB);
+        Government government = new Government(plaza, exBarge);
 
-        Loudthroat Nameless1 = new Loudthroat("Раб1", Place.HOMETOWN);
-        Loudthroat Nameless2 = new Loudthroat("Раб2", Place.HOMETOWN);
-        BargeA.addEmployee(Nameless1);
-        BargeA.addEmployee(Nameless2);
+        Stock exampleStock1 = new Stock();
+        Stock exampleStock2 = new Stock("рандомная", 15);
+        Stock exampleStock3 = new Stock("хайповая", 7);
 
-        Loudthroat Nameless3 = new Loudthroat("Раб3", Place.DAVILON);
-        Loudthroat Nameless4 = new Loudthroat("Раб4", Place.DAVILON);
-        BargeB.addEmployee(Nameless3);
-        BargeB.addEmployee(Nameless4);
+        messenger.message(exLoudthroat1.scream(Action.BUY, exampleStock1));
+        messenger.message(exLoudthroat2.scream(Action.SELL, exampleStock1));
+        messenger.message(exLoudthroat1.scream(Action.SELL, exampleStock2));
+        messenger.message(exLoudthroat2.scream(Action.BUY, exampleStock2));
+        messenger.message(exLoudthroat1.scream(Action.BUY, exampleStock3));
+        messenger.message(exLoudthroat2.scream(Action.SELL, exampleStock3));
 
-        Stock ExampleStock1 = new Stock();
-        Stock ExampleStock2 = new Stock("рандомная", 15);
-        Stock ExampleStock3 = new Stock("хайповая", 7);
-        Stock GigaStock = new Stock("гигантские акции", 1000);
+        Street UnknownStreet = new Street();
+        Millioners protagonist = new Millioners("Скуперфильд", UnknownStreet, 15000000);
+
+        Millioners exMill = new Millioners("Неизвестный", UnknownStreet, 100);
+
+        Home protHome = new Home("свой дом", protagonist.getName(), Position.HOMETOWN);
+        PastaFactory protFactory = new PastaFactory("своя фабрика", protagonist.getName(), Position.HOMETOWN);
+
+        Barge grabBarge = new Barge("грабенгерская баржа", protagonist.getName(), Position.HOMETOWN);
+        Barge davBarge = new Barge("давилонская баржа", protagonist.getName(), Position.DAVILON);
+
+        protagonist.addImmovables(protHome, protFactory);
+
+        Loudthroat nameless1 = new Loudthroat("Раб1", grabBarge);
+        Loudthroat nameless2 = new Loudthroat("Раб2", grabBarge);
+        grabBarge.addEmployee(nameless1);
+        grabBarge.addEmployee(nameless2);
+
+        Loudthroat nameless3 = new Loudthroat("Раб3", davBarge);
+        Loudthroat nameless4 = new Loudthroat("Раб4", davBarge);
+        davBarge.addEmployee(nameless3);
+        davBarge.addEmployee(nameless4);
 
         messenger.message(protagonist.getImmovables());
 
-        messenger.message(protagonist.giveInstruction(BargeA,Instruction.BUY, ExampleStock1));
-        messenger.message(protagonist.giveInstruction(BargeA,Instruction.BUY,ExampleStock2));
-
-        messenger.message(protagonist.checkStock(ExampleStock2));
-        messenger.message(protagonist.checkStock(ExampleStock3));
+        messenger.message(protagonist.giveInstruction(grabBarge,Instruction.BUY, exampleStock1));
+        messenger.message(protagonist.giveInstruction(grabBarge,Instruction.BUY,exampleStock2));
 
         protagonist.addDestination(protHome.getName());
         protagonist.addDestination(protFactory.getName());
-        protagonist.addDestination(Place.RAILWAY_STATION.getPlace());
-        protagonist.addDestination(Place.DAVILON.getPlace());
-        protagonist.addDestination(BargeB.getName());
+        protagonist.addDestination(Position.RAILWAY_STATION.getPlace());
+        protagonist.addDestination(Position.DAVILON.getPlace());
+        protagonist.addDestination(davBarge.getName());
 
         messenger.message(protagonist.getDestinationList());
 
-        protagonist.setPosition(Place.UNKNOWN);
-        messenger.message(protagonist.getName() + " находится: " +protagonist.getPosition());
+        messenger.message(protagonist.getName() + ": находится " +protagonist.getStrPlace());
 
-        protagonist.setPosition(Place.FIELD);
-        messenger.message(protagonist.getName() + " находится: " + protagonist.getPosition());
+        protagonist.setPlace(new Field());
+        messenger.message(protagonist.getName() + ": находится " + protagonist.getStrPlace());
+
+        protagonist.setPlace(new Street());
+        messenger.message(protagonist.getName() + ": находится " + protagonist.getStrPlace());
+
+        protagonist.setPlace(new Street("неизветсный бульвар"));
+        messenger.message(protagonist.getName() + ": находится " + protagonist.getStrPlace());
+
+        protagonist.setPlace(new Street("новая неизветсная улица"));
+        messenger.message(protagonist.getName() + ": находится " + protagonist.getStrPlace());
+
+        Street curvedStreet = new Street("Кривая улица");
+
+        protagonist.setPlace(curvedStreet);
+        messenger.message(protagonist.getName() + ": находится " + protagonist.getStrPlace());
+
+        try {
+            Class myClass = Class.forName("places.socialPlaces.Plaza");
+            String nameClass = myClass.getName();
+            messenger.message(nameClass);
+        } catch (ClassNotFoundException e){
+
+        }
     }
 }

@@ -1,11 +1,11 @@
-package estate;
+package places.estate;
 
-import enums.Place;
+import enums.Position;
 
 public class PastaFactory extends Immovables {
 
 
-    public PastaFactory(String name, String owner, Place position){
+    public PastaFactory(String name, String owner, Position position){
         super(name, owner, position);
     }
 

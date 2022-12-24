@@ -1,6 +1,6 @@
 package enums;
 
-public enum Place {
+public enum Position {
     UNKNOWN("Неизвестно где"),
     HOMETOWN("Родной город"),
     FIELD("Поле"),
@@ -9,7 +9,7 @@ public enum Place {
 
 
     private final String location;
-    Place(String location)
+    Position(String location)
     {
         this.location = location;
     }

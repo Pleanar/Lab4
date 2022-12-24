@@ -3,22 +3,14 @@ package requisite;
 import interfaces.*;
 import java.util.Objects;
 
-abstract class Thing implements IName, IPossesable {
-    protected String owner;
+public abstract class Thing implements IName {
     protected String name;
 
-    Thing (String name,String owner){
+    public Thing(String name){
         this.name = name;
-        this.owner = owner;
     }
 
-    Thing (String name){
-        this.name = name;
-        owner = "никто";
-    }
-
-    Thing() {
-        owner = "никто";
+    public Thing() {
         name = "безымянная вещь";
     }
 
@@ -26,16 +18,8 @@ abstract class Thing implements IName, IPossesable {
         this.name = name;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public String getOwner() {
-        return owner;
     }
 
     @Override
@@ -49,7 +33,7 @@ abstract class Thing implements IName, IPossesable {
 
         Thing other = (Thing) otherObject;
 
-        boolean result = this.name.equals(other.name) && this.owner.equals(other.owner);
+        boolean result = this.name.equals(other.name);
 
         return result;
     }
@@ -57,13 +41,13 @@ abstract class Thing implements IName, IPossesable {
     @Override
     public int hashCode()
     {
-        return Objects.hash(name, owner);
+        return Objects.hash(name);
     }
 
     @Override
     public String toString()
     {
         return this.getClass().getName() + "["
-                + "name=" + name + "owner=" + owner + "]";
+                + "name=" + name + "]";
     }
 }

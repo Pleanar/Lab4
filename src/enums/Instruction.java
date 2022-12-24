@@ -1,8 +1,8 @@
 package enums;
 
 public enum Instruction {
-    BUY("Купить"),
-    SELL("Продать");
+    BUY("купить"),
+    SELL("продать");
 
 
     private final String content;

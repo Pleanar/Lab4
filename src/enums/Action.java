@@ -1,9 +1,10 @@
 package enums;
 
 public enum Action {
-    CANBUY("можно купить"),
-    BUY("купить"),
-    SELL("продать"),
+    CAN_BUY("может купить"),
+    CAN_SELL("может продать"),
+    BUY("покупает"),
+    SELL("продает"),
     GET_PRICE("узнать цену");
 
 

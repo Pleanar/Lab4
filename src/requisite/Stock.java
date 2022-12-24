@@ -1,13 +1,16 @@
 package requisite;
 
+import interfaces.IPossesable;
+
 import java.util.Objects;
 
-public class Stock extends Thing{
+public class Stock extends Thing implements IPossesable {
 
     private Integer price;
+    private String owner;
 
     public Stock(){
-        this.setName("безымянная акция");
+        this.setName("безымянная");
         this.setPrice(10);
         this.setOwner("кто-то");
     }
@@ -45,7 +48,7 @@ public class Stock extends Thing{
 
         Stock other = (Stock) otherObject;
 
-        boolean result = this.price.equals(other.price);
+        boolean result = this.price.equals(other.price) && this.owner.equals(other.owner);
 
         return result;
     }
@@ -53,7 +56,7 @@ public class Stock extends Thing{
     @Override
     public int hashCode()
     {
-        return Objects.hash(super.hashCode(), price);
+        return Objects.hash(super.hashCode(), owner, price);
     }
 
     @Override
@@ -63,4 +66,11 @@ public class Stock extends Thing{
                 + "name=" + name + "price=" + price + "owner=" + owner + "]";
     }
 
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return this.owner;
+    }
 }

@@ -2,22 +2,17 @@ package actors;
 
 import enums.Action;
 import enums.Instruction;
-import enums.Place;
-import estate.Barge;
-import estate.Immovables;
+import places.Place;
+import places.estate.Barge;
+import places.estate.Immovables;
 import interfaces.IBoss;
 import interfaces.IIntensinable;
-import interfaces.IName;
-import interfaces.IPositionable;
+import places.socialPlaces.SocialPlace;
 import requisite.Stock;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
-
-    protected Place position;
-
-    protected String name;
+public class Millioners extends Human implements IBoss, IIntensinable {
     private ArrayList<Stock> stocks = new ArrayList<>(0);
     private ArrayList<Immovables> immovables = new ArrayList<>(0);
 
@@ -26,29 +21,41 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
 
 
     public Millioners(String name){
-        this.name = name;
-        position = Place.UNKNOWN;
+        super(name);
     }
 
-    public Millioners(String name, Place position){
-        this.name = name;
-        this.position = position;
+    public Millioners(String name, Place place){
+        super(name, place);
     }
 
-    public Millioners(String name, Place position, int cash){
-        if (cash > this.cash){
-            this.cash = cash;
+    public void irritationAction(SocialPlace socialPlace) {
+    }
+
+    public Millioners(String name, Place place, int cash) {
+        this.name = name;
+        this.place = place;
+        try {
+            if (cash < 0){
+                throw new NotEnoughCashExeption("Деньги не могут быть отрицательного значения! Установлен минимум - 10000000");
+            }
+            if (cash > this.cash){
+                this.cash = cash;
+            } else {
+                throw new NotEnoughCashExeption("Денег недостаточно - " + this.getName() + " не миллионер. Установлен минимум - 10000000");
+            }
+        } catch (NotEnoughCashExeption e){
+            this.cash = 10000000;
         }
-        this.name = name;
-        this.position = position;
     }
 
     public void addDestination(String location){
         destinationList.add(location);
     }
+
     public String getNextDestination() {
         return destinationList.get(0);
     }
+
     public String getDestinationList() {
         String list = this.getName() + " хочет пойти: " + getNextDestination();
         for (int i = 1; i < destinationList.size(); i++){
@@ -61,12 +68,14 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
         String list = this.getName() + " имеет ";
         for (int i = 0; i < immovables.size(); i++){
             Immovables immovable = immovables.get(i);
-            list = list + "собственность - " + immovable.getName() + " находится в " + immovable.getPosition();
+            list = list + "собственность - " + immovable.getName() + " находится в " + immovable.getPosition() + " ";
 
-            if (immovable.getClass().equals(new Barge().getClass())){
+            if (immovable.getClass().equals(Barge.class)){
                 Barge barge = (Barge) immovable;
-                list = list + barge.getEmployees();
+                list = list + barge.getEmployees() + " ";
             }
+
+            list = list + "\n";
         }
         return list;
     }
@@ -89,7 +98,10 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
     }
 
     public String giveInstruction(Barge barge, Instruction instruction, Stock stock) {
-        return barge.applyInstructions(this, instruction, stock);
+        String result = this.getName() + ": дает инструкцию " + instruction.getInstruction() + " акцию - " + stock.getName()
+                + " работникам " + barge.getName() + "\n";
+        result += barge.applyInstructions(this, instruction, stock);
+        return result;
     }
 
     public boolean haveStock(Stock stock) {
@@ -103,7 +115,7 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
             stock.setOwner(this.name);
             return this.name + ": " + Action.BUY.getAction() + " " + stock.getName() + " по " + stock.getPrice() + " ";
         }
-        return this.name + ": " + "не " + Action.CANBUY.getAction() + "акцию - " +stock.getName() + " ";
+        return this.name + ": " + "не " + Action.CAN_BUY.getAction() + " акцию - " +stock.getName() + " ";
     }
 
     public String sellStock(Stock stock){
@@ -113,49 +125,22 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
             stock.setOwner("кто-то");
             return this.name + ": " + Action.SELL.getAction() + "акцию - " + stock.getName() + " " + stock.getOwner();
         }
-        return this.name + ": " + "акцию - " + stock.getName() + "не " + Action.SELL.getAction();
-    }
-
-    public String checkStock(Stock stock){
-        if (evaluateStock(stock)){
-            return this.name + ":" + Action.GET_PRICE.getAction() + " и " + Action.CANBUY.getAction() + " акцию - " + stock.getName();
-        }
-        else return this.name + ":" + Action.GET_PRICE.getAction() + " и не " + Action.CANBUY.getAction() + " акцию - " + stock.getName();
+        return this.name + ": " + "акцию - " + stock.getName() + " не " + Action.SELL.getAction();
     }
     public boolean evaluateStock(Stock stock){
         Stock AverageStock = new Stock();
         return stock.getPrice() <= AverageStock.getPrice();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPosition(Place position) {
-        this.position = position;
-    }
-
-    public String getPosition() {
-        return position.getPlace();
-    }
-
     @Override
     public boolean equals(Object otherObject)
     {
-        if (this == otherObject) return true;
-
-        if (otherObject == null) return false;
-
-        if (!this.getClass().equals(otherObject.getClass())) return false;
+        if (!super.equals(otherObject)) return false;
 
         Millioners other = (Millioners) otherObject;
 
-        boolean result = this.name.equals(other.name) && this.position.equals(other.position) && (this.cash == other.cash)
-                && this.stocks.equals(other.stocks) && this.destinationList.equals(other.destinationList) && this.immovables.equals(other.immovables);
+        boolean result = (this.cash == other.cash) && this.stocks.equals(other.stocks)
+                && this.destinationList.equals(other.destinationList) && this.immovables.equals(other.immovables);
 
         return result;
     }
@@ -163,15 +148,22 @@ public class Millioners implements IName, IPositionable, IBoss, IIntensinable {
     @Override
     public int hashCode()
     {
-        return Objects.hash(name, position, stocks, immovables, cash, destinationList);
+        return Objects.hash(super.hashCode(), stocks, immovables, cash, destinationList);
     }
 
     @Override
     public String toString()
     {
         return this.getClass().getName() + "["
-                + "name=" + name + "position=" + position.getPlace() + "cash="
+                + "name=" + name + "place=" + place.toString() + "cash="
                 + cash + "immovables=" + this.getImmovables() + "stocks="
                 + this.getStocks() + "destinationList=" + this.getDestinationList() + "]";
+    }
+
+    private class NotEnoughCashExeption extends Exception{
+
+        public NotEnoughCashExeption(String message){
+            System.out.println(message);
+        }
     }
 }

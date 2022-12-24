@@ -1,7 +1,7 @@
 package interfaces;
 
 import enums.Instruction;
-import estate.Barge;
+import places.estate.Barge;
 import requisite.Stock;
 
 public interface IBoss{

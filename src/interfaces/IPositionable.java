@@ -1,7 +1,7 @@
 package interfaces;
-import enums.Place;
+import enums.Position;
 
 public interface IPositionable {
-    void setPosition(Place position);
+    void setPosition(Position position);
     String getPosition();
 }

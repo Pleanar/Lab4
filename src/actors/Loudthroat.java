@@ -1,57 +1,60 @@
 package actors;
 
-import enums.Place;
+import enums.Action;
 import interfaces.IEmployee;
 import interfaces.IBoss;
-import interfaces.IName;
-import interfaces.IPositionable;
+import places.Place;
+import places.socialPlaces.SocialPlace;
 import requisite.Stock;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class Loudthroat implements IEmployee, IName, IPositionable {
-
-    private  String name;
-    private Place position;
+public class Loudthroat extends Human implements IEmployee {
 
     public Loudthroat(){
-        name = "Раб";
-        position = Place.UNKNOWN;
+        super("Раб");
     }
 
-    Loudthroat(String name){
-        this.name = name;
-        position = Place.UNKNOWN;
+    public Loudthroat(String name){
+        super(name);
     }
 
-    public Loudthroat(String name, Place position){
-        this.name = name;
-        this.position = position;
+    public Loudthroat(Place place){
+        super("Раб", place);
+    }
+
+    public Loudthroat(String name, Place place){
+        super(name, place);
+    }
+
+    @Override
+    public void irritationAction(SocialPlace socialPlace) {
+        ArrayList<Human> visitors = socialPlace.getVisitors();
+        weapon = acquireWeapon();
+        for (Human human: visitors){
+            if ((human instanceof Citizen) && (human.nerves <= 50)){
+                this.damage(human, weapon);
+            }
+        }
+    }
+
+    public String scream(Action action, Stock stock){
+        if (this.place instanceof SocialPlace){
+            SocialPlace socialPlace = (SocialPlace) this.place;
+            socialPlace.changeNoise(10);
+            socialPlace.irritate();
+        }
+        return this.name + ": " + action.getAction() + " " + stock.getName() + " за " + stock.getPrice();
     }
 
     public String buyInstruction(IBoss boss, Stock stock){
-        String result = boss.buyStock(stock);
+        String result = scream(Action.CAN_BUY,stock) + "\n" + boss.buyStock(stock) + "\n";
         return result;
     }
     public String sellInstruction(IBoss boss, Stock stock){
-        String result = boss.sellStock(stock);
+        String result = scream(Action.CAN_SELL, stock) + "\n" + boss.sellStock(stock) + "\n";
         return result;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPosition(Place position) {
-        this.position = position;
-    }
-
-    public String getPosition() {
-        return position.getPlace();
     }
 
     @Override
@@ -65,7 +68,7 @@ public class Loudthroat implements IEmployee, IName, IPositionable {
 
         Loudthroat other = (Loudthroat) otherObject;
 
-        boolean result = this.name.equals(other.name) && this.position.equals(other.position);
+        boolean result = this.name.equals(other.name) && this.place.equals(other.place);
 
         return result;
     }
@@ -73,13 +76,13 @@ public class Loudthroat implements IEmployee, IName, IPositionable {
     @Override
     public int hashCode()
     {
-        return Objects.hash(name, position);
+        return Objects.hash(name, place);
     }
 
     @Override
     public String toString()
     {
         return this.getClass().getName() + "["
-                + "name=" + name + "position=" + position.getPlace() + "]";
+                + "name=" + name + "place=" + place.toString() + "]";
     }
 }
